@@ -1,0 +1,17 @@
+[environment]
+seed = 44
+ue_count = 100
+# scenario can be "Full Failure", "1 BS Fail A", "2 BS Fail A" or "No Failure"
+scenario = "Full Failure"
+#location_error = 1.0
+#low_fidelity = true
+
+[case]
+method = "random"
+uav_count = 2
+seed = 123
+xy_extent = 400
+z_min = 50
+z_max = 1000
+#use_ue_offset = true
+
