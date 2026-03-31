@@ -42,7 +42,7 @@ def main(summary_file: str,
         df["placement"] = df["placement"].replace({"terrestial": "Terrestial Only"})
         df["placement"] = df["placement"].replace({"leo": "Traditional D2C"})
         df["placement"] = df["placement"].replace({"titan": "TITAN"})
-        df["placement"] = df["placement"].replace({"bayesian_aoi": "SOTA [25]"})
+        df["placement"] = df["placement"].replace({"sota": "SOTA [25]"})
         df = df.sort_values(by=["gnb_count", "placement"])
         x_col, hue_col = "gnb_count", "placement"
         palette = sns.color_palette("rocket", n_colors=df[hue_col].nunique())
@@ -54,7 +54,7 @@ def main(summary_file: str,
     else:
         x_col, hue_col = "uav_count", "placement"
 
-        all_placements     = ["random", "bayesian_stochastic", "greedy", "bayesian_aoi",
+        all_placements     = ["random", "bayesian_stochastic", "greedy", "sota",
                               "bayesian", "titan_low"]
         all_legend_labels  = ["Baseline-1", "Baseline-2", "Baseline-3", "SOTA [25]",
                               "TITAN", "TITAN (Low Fidelity)"]

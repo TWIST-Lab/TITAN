@@ -17,7 +17,6 @@ from run_simulations import (
     run_random_placement,
     run_bayesian_placement,
     run_bayesian_stochastic_placement,
-    run_bayesian_aoi_placement,
     run_leo,
 )
 
@@ -155,17 +154,6 @@ def run_case(cfg: dict, debug: bool) -> dict:
             z_min=case_cfg.get("z_min", 50),
             z_max=case_cfg.get("z_max", 1000),
             n_trials=case_cfg.get("n_trials", 150),
-            use_ue_offset=opt_offset,
-            eval_offset=eval_offset,
-        )
-    elif method == "bayesian_aoi":
-        result = run_bayesian_aoi_placement(
-            env,
-            uav_count,
-            xy_extent=case_cfg.get("xy_extent", 250),
-            z_min=case_cfg.get("z_min", 50),
-            z_max=case_cfg.get("z_max", 1000),
-            n_trials=case_cfg.get("n_trials", 2500),
             use_ue_offset=opt_offset,
             eval_offset=eval_offset,
         )

@@ -11,7 +11,6 @@ from SimulationEnvironment import SimulationEnvironment
 from bayesian_optimizer import (
     optimize_uav_positions,
     optimize_uav_positions_uma,
-    optimize_uav_positions_aoi,
 )
 from Utilities import plot_timeseries_from_df, plot_allocation_from_df
 
@@ -21,27 +20,6 @@ CANONICAL_GNB_POSITIONS = np.array([
     [-140.0, -300.0, 110.0],
     [-220.0, 220.0, 40.0],
 ], dtype=float)
-
-
-def _get_failed_gnb_aoi_centers(env, tol=1e-6):
-    """Return failed gNB coordinates as AOI centers for failure analysis."""
-    active_positions = np.array([
-        np.array(tx.position).reshape(-1)[:3] for tx in env.base_stations
-    ], dtype=float) if env.base_stations else np.empty((0, 3), dtype=float)
-
-    failed = []
-    for gnb in CANONICAL_GNB_POSITIONS:
-        if active_positions.size == 0:
-            failed.append(gnb)
-            continue
-        deltas = np.linalg.norm(active_positions - gnb[None, :], axis=1)
-        if not np.any(deltas < tol):
-            failed.append(gnb)
-
-    if not failed:
-        return np.array([[0.0, 0.0, 0.0]], dtype=float)
-
-    return np.array(failed, dtype=float)
 
 def evaluate_env(env, placement: str, uav_count: int, use_ue_offset: bool = False) -> dict:
     """
@@ -259,60 +237,6 @@ def run_bayesian_placement(
         eval_offset = use_ue_offset
 
     return evaluate_env(env, "bayesian", uav_count, use_ue_offset=eval_offset)
-
-def run_bayesian_aoi_placement(
-    env,
-    uav_count,
-    xy_extent=500,
-    z_min=50,
-    z_max=1000,
-    n_trials=150,
-    use_ue_offset=False,
-    eval_offset=None,
-):
-    """Bayesian optimisation with AOI-aware loss.
-
-    In failure analysis, each failed gNB location is used as an AOI center.
-    """
-    total_uavs = len(env.uavs)
-    inactive_uavs = total_uavs - uav_count
-
-    for tx in env.uavs:
-        tx.power_dbm = 23
-        env.bs_power_dbm = 23
-
-    for s in range(inactive_uavs):
-        env.uavs[s].power_dbm = -200
-
-    failed_aoi_centers = _get_failed_gnb_aoi_centers(env)
-
-    best_xyz, best_obj = optimize_uav_positions_aoi(
-        env,
-        n_trials=n_trials,
-        xy_extent=xy_extent,
-        z_min=z_min,
-        z_max=z_max,
-        alpha=0.01,
-        beta=1.0,
-        gamma=0.8,
-        d_min=400.0,
-        aoi_centers=failed_aoi_centers,
-        aoi_radii=np.full(failed_aoi_centers.shape[0], 800.0, dtype=float),
-        use_ue_offset=use_ue_offset,
-    )
-
-    for i, tx in enumerate(env.uavs):
-        tx.position = best_xyz[i]
-        tx.look_at(np.array([best_xyz[i][0], best_xyz[i][1], 0]))
-
-    tx_pos = [np.array(tx.position).flatten().tolist() for tx in env.txs]
-    serving, sinr = env.check_sinr(tx_pos, use_ue_offset=use_ue_offset)
-
-    if eval_offset is None:
-        eval_offset = use_ue_offset
-
-    return evaluate_env(env, "bayesian_aoi", uav_count, use_ue_offset=eval_offset)
-
 
 def main():
     # Create results directory

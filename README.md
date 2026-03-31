@@ -1,7 +1,7 @@
-# Sagin_RT_Optimization
+# Twin Informed Topology Adaptation (TITAN)
 
 This repository contains tools for running UAV placement simulations.
-All utilities require **Python 3.12**.
+All utilities require **Python 3.12** and **Sionna 1.2**.
 
 ## Running a single simulation case
 
@@ -11,7 +11,7 @@ Use `run_case.py` with a TOML configuration file to evaluate one set of paramete
 python3 run_case.py example_case.toml --summary results/summary.csv
 ```
 
-The `example_case.toml` file provides an example configuration. Edit the values to change the simulation environment and method. For bayesian methods (`bayesian`, `bayesian_stochastic`, `bayesian_aoi`), final UAV altitude is applied as `terrain_height(x,y) + z_min`, so every UAV remains at least `z_min` meters above local terrain. Setting `location_error` under `[environment]` controls the UE location error radius for digital twin accuracy evaluation. The environment section also accepts a `scenario` option for base station failure analysis. Valid values are `"Full Failure"`, `"1 BS Fail A"`, `"2 BS Fail A"` and `"No Failure"`. Set `uav_count = 0` in the `[case]` section to evaluate a scenario without UAVs. The `[case].method` field supports `"random"`, `"bayesian"`, `"bayesian_stochastic"`, `"bayesian_aoi"` and `"leo"`. `bayesian_aoi` uses AOI-aware loss with paper hyperparameters (`alpha=0.01`, `beta=1.0`, `gamma=0.8`, `d_min=400m`); in failure analysis, failed gNB coordinates are automatically used as AOI centers.
+The `example_case.toml` file provides an example configuration. Edit the values to change the simulation environment and method. For bayesian methods (`bayesian`, `bayesian_stochastic`), final UAV altitude is applied as `terrain_height(x,y) + z_min`, so every UAV remains at least `z_min` meters above local terrain. Setting `location_error` under `[environment]` controls the UE location error radius for digital twin accuracy evaluation. The environment section also accepts a `scenario` option for base station failure analysis. Valid values are `"Full Failure"`, `"1 BS Fail A"`, `"2 BS Fail A"` and `"No Failure"`. Set `uav_count = 0` in the `[case]` section to evaluate a scenario without UAVs. The `[case].method` field supports `"random"`, `"bayesian"`, `"bayesian_stochastic"`, and `"leo"`. 
 
 ## Plotting results
 

@@ -43,7 +43,7 @@ def main() -> None:
     parser.add_argument("output", help="Directory to place generated configs")
     parser.add_argument("--base", default=DEFAULT_BASE, help="Base TOML file")
     parser.add_argument("--uav-count", type=int, required=True)
-    parser.add_argument("--method", choices=["random", "bayesian", "bayesian_stochastic", "bayesian_aoi", "leo"], required=True)
+    parser.add_argument("--method", choices=["random", "bayesian", "bayesian_stochastic", "sota", "leo"], required=True)
     parser.add_argument("--seeds", type=int, nargs="+", default=[0], help="Seeds for environment and case")
     parser.add_argument("--n-trials", type=int, default=None, help="Number of trials for bayesian method")
     parser.add_argument(
@@ -76,7 +76,7 @@ def main() -> None:
             "uav_count": args.uav_count,
             "seed": seed,
         })
-        if args.n_trials is not None and args.method in {"bayesian", "bayesian_stochastic", "bayesian_aoi"}:
+        if args.n_trials is not None and args.method in {"bayesian", "bayesian_stochastic"}:
             case["n_trials"] = args.n_trials
         filename = f"case_{args.method}_uav{args.uav_count}_seed{seed}"
         if args.scenario is not None:
