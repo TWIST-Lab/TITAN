@@ -1,7 +1,7 @@
-# Sagin_RT_Optimization
+# Twin Informed Topology Adaptation (TITAN)
 
 This repository contains tools for running UAV placement simulations.
-All utilities require **Python 3.12**.
+All utilities require **Python 3.12** and **Sionna 1.2**.
 
 ## Running a single simulation case
 
